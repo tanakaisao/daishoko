@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>さんすう・最大公約数と最小公倍数</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <style>
+        body { font-family: 'Hiragino Maru Gothic ProN', sans-serif; margin: 30px; background-color: #fffbe6; color: #000000; }
+        .container { max-width: 750px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: 3px solid #ffcc00; margin: 0 auto; }
+        h1 { color: #d35400; border-bottom: 3px dashed #ffcc00; padding-bottom: 10px; font-size: 24px; text-align: center; }
+        .input-group { margin-bottom: 15px; text-align: center; }
+        label { font-weight: bold; font-size: 18px; margin-right: 10px; color: #000000; }
+        input[type="number"] { padding: 8px; width: 100px; border: 2px solid #ffcc00; border-radius: 8px; font-size: 20px; text-align: center; color: #000000; font-weight: bold; }
+        .btn-area { text-align: center; margin: 20px 0; }
+        button { padding: 10px 30px; background-color: #ff9900; color: white; border: none; border-radius: 25px; font-size: 18px; cursor: pointer; font-weight: bold; box-shadow: 0 4px #d35400; }
+        button:hover { background-color: #f39c12; }
+        button:active { box-shadow: 0 0 #d35400; transform: translateY(4px); }
+        .result-box { margin-top: 25px; padding: 20px; background-color: #fffdf9; border: 2px dashed #ff9900; border-radius: 8px; display: none; }
+        .result-title { font-weight: bold; color: #b33939; margin-top: 20px; font-size: 18px; border-left: 5px solid #ff9900; padding-left: 10px; }
+        .highlight-red { color: #b33939; font-weight: bold; }
+        
+        .output-text { background: white; padding: 15px; border: 2px solid #ffe0b2; border-radius: 6px; font-family: 'Courier New', Courier, monospace; font-size: 19px; font-weight: bold; line-height: 1.8; overflow-x: auto; white-space: pre; color: #000000; }
+        
+        .box-num { border: 2px solid #1e8449; background-color: #e8f8f5; padding: 0px; border-radius: 4px; font-weight: bold; color: #1e8449; display: inline-block; text-align: center; width: 22px; height: 26px; line-height: 26px; }
+        .normal-num { display: inline-block; text-align: center; width: 26px; height: 30px; line-height: 30px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎒 素因数分解を使って、最大公約数、最小公倍数をみつけよう！</h1>
+    <p style="text-align: center; font-size: 15px; color: #333; font-weight: bold;">2つの数字を、それぞれ、素因数分解して、共通の部分を調べます。</p>
+    
+    <div class="input-group">
+        <label for="num1">ひとつめの数字 :</label>
+        <input type="number" id="num1" value="30" min="1">
+    </div>
+    <div class="input-group">
+        <label for="num2">ふたつめの数字 :</label>
+        <input type="number" id="num2" value="75" min="1">
+    </div>
+    
+    <div class="btn-area">
+        <button py-click="calculate_all">しらべるさ！</button>
+    </div>
+
+    <div id="result" class="result-box">
+        <div class="result-title">🧩 1. 数字をいちばん小っちゃくバラバラにしたよ（素因数分解）</div>
+        <div id="step1_out" class="output-text"></div>
+        
+        <div class="result-title">✨ 2. 共通の部分をみつけよう</div>
+        <div id="step2_out" class="output-text"></div>
+        
+        <div class="result-title">📐 3. 両方を同じ大きさにするには</div>
+        <div id="step3_out" class="output-text"></div>
+    </div>
+</div>
+
+<script type="py">
+import collections
+from pyscript import document
+
+def prime_factors_list(n):
+    factors = []
+    d = 2
+    temp = n
+    while d * d <= temp:
+        while (temp % d) == 0:
+            factors.append(d)
+            temp //= d
+        d += 1
+    if temp > 1:
+        factors.append(temp)
+    return factors
+
+def calculate_all(event):
+    val1 = int(document.getElementById("num1").value)
+    val2 = int(document.getElementById("num2").value)
+    
+    list1 = prime_factors_list(val1)
+    list2 = prime_factors_list(val2)
+    
+    max_len = max(len(str(val1)), len(str(val2)))
+    head1 = f"{val1:>{max_len}} ＝ "
+    head2 = f"{val2:>{max_len}} ＝ "
+    
+    # ----------------------------------------------
+    # ステップ1
+    # ----------------------------------------------
+    str_list1 = [f"<span class='normal-num'>{x}</span>" for x in list1]
+    str_list2 = [f"<span class='normal-num'>{x}</span>" for x in list2]
+    
+    html1 = f"{head1}{' × '.join(str_list1)}\n"
+    html1 += f"{head2}{' × '.join(str_list2)}"
+    document.getElementById("step1_out").innerHTML = html1
+    
+    # ----------------------------------------------
+    # ステップ2
+    # ----------------------------------------------
+    c1 = collections.Counter(list1)
+    c2 = collections.Counter(list2)
+    common_primes = sorted(list((c1 & c2).elements()))
+    
+    gcd_val = 1
+    for x in common_primes:
+        gcd_val *= x
+        
+    box_counter1 = collections.Counter(common_primes)
+    box_counter2 = collections.Counter(common_primes)
+    
+    html2_list1 = []
+    for x in list1:
+        if box_counter1[x] > 0:
+            html2_list1.append(f"<span class='box-num'>{x}</span>")
+            box_counter1[x] -= 1
+        else:
+            html2_list1.append(f"<span class='normal-num'>{x}</span>")
+            
+    html2_list2 = []
+    for x in list2:
+        if box_counter2[x] > 0:
+            html2_list2.append(f"<span class='box-num'>{x}</span>")
+            box_counter2[x] -= 1
+        else:
+            html2_list2.append(f"<span class='normal-num'>{x}</span>")
+            
+    html2 = f"{head1}{' × '.join(html2_list1)}\n"
+    html2 += f"{head2}{' × '.join(html2_list2)}\n\n"
+    
+    # 【修正】「のなかが共通」＆「共通の部分がないので 最大公約数は１」に修正！
+    if len(common_primes) > 0:
+        str_common = " × ".join(map(str, common_primes))
+        html2 += f"👉 <b>□ のなかが共通の部分（<span class='highlight-red'>最大公約数</span>）</b>：\n"
+        html2 += f"   {str_common} ＝ <span style='color: #1e8449; font-size: 22px;'><b>{gcd_val}</b></span>"
+    else:
+        html2 += f"👉 <b>□ のなかが共通の部分（<span class='highlight-red'>最大公約数</span>）</b>：\n"
+        html2 += f"   <b>共通の部分がないので <span class='highlight-red'>最大公約数は１</span></b>"
+        
+    document.getElementById("step2_out").innerHTML = html2
+    
+    # ----------------------------------------------
+    # ステップ3
+    # ----------------------------------------------
+    diff1_list = sorted(list((c1 - c2).elements()))
+    diff2_list = sorted(list((c2 - c1).elements()))
+    
+    lcm_val = 1
+    all_primes = set(c1.keys()) | set(c2.keys())
+    for p in all_primes:
+        lcm_val *= (p ** max(c1[p], c2[p]))
+        
+    has_common = (len(common_primes) > 0)
+    
+    # ひとつめの文章と式
+    if len(diff2_list) > 0:
+        if has_common:
+            str_diff2 = " × ".join(map(str, diff2_list))
+            line1_text = f"・ひとつめの数字（{val1}）に、ふたつめのはみ出た部分（{str_diff2}）を掛け合わせる\n"
+            line1_calc = f"   {val1} × {str_diff2} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n"
+        else:
+            # 共通がない時は「あいての数字」をかける＆式もすっきり元の数字に！
+            line1_text = f"・ひとつめの数字（{val1}）に、あいての数字（{val2}）を掛け合わせる\n"
+            line1_calc = f"   {val1} × {val2} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n"
+    else:
+        line1_text = f"・ひとつめの数字（{val1}）は、ふたつめのはみ出た部分がないのでそのまま\n"
+        line1_calc = f"   {val1} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n"
+        
+    # ふたつめの文章と式
+    if len(diff1_list) > 0:
+        if has_common:
+            str_diff1 = " × ".join(map(str, diff1_list))
+            line2_text = f"・ふたつめの数字（{val2}）に、ひとつめのはみ出た部分（{str_diff1}）を掛け合わせる\n\n"
+            line2_calc = f"   {val2} × {str_diff1} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n\n"
+        else:
+            # 共通がない時は「あいての数字」をかける＆式もすっきり元の数字に！
+            line2_text = f"・ふたつめの数字（{val2}）に、あいての数字（{val1}）を掛け合わせる\n\n"
+            line2_calc = f"   {val2} × {val1} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n\n"
+    else:
+        line2_text = f"・ふたつめの数字（{val2}）は、ひとつめのはみ出た部分がないのでそのまま\n\n"
+        line2_calc = f"   {val2} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n\n"
+        
+    html3 = line1_text + line2_text
+    html3 += f"👉 <b>両方が同じ大きさになる（<span class='highlight-red'>最小公倍数</span>）</b>：\n"
+    html3 += line1_calc + line2_calc
+    
+    html3 += f"<span style='color: #555555; font-size: 14px;'>【たしかめ算】\n"
+    html3 += f"ふたつの数字をかけた数： {val1} × {val2} ＝ {val1 * val2}\n"
+    html3 += f"最大公約数 × 最小公倍数： {gcd_val} × {lcm_val} ＝ {gcd_val * lcm_val} （おなじになったね！）</span>"
+    document.getElementById("step3_out").innerHTML = html3
+    
+    document.getElementById("result").style.display = "block"
+</script>
+
+</body>
+</html>
