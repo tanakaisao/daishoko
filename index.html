@@ -7,31 +7,47 @@
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <style>
-        body { font-family: 'Hiragino Maru Gothic ProN', sans-serif; margin: 30px; background-color: #fffbe6; color: #000000; }
-        .container { max-width: 750px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: 3px solid #ffcc00; margin: 0 auto; }
-        h1 { color: #d35400; border-bottom: 3px dashed #ffcc00; padding-bottom: 10px; font-size: 24px; text-align: center; }
+        body { font-family: 'Hiragino Maru Gothic ProN', sans-serif; margin: 20px 10px; background-color: #fffbe6; color: #000000; }
+        .container { max-width: 750px; background: white; padding: 20px 15px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border: 3px solid #ffcc00; margin: 0 auto; }
+        h1 { color: #d35400; border-bottom: 3px dashed #ffcc00; padding-bottom: 10px; font-size: 22px; text-align: center; margin-top: 10px; }
         .input-group { margin-bottom: 15px; text-align: center; }
-        label { font-weight: bold; font-size: 18px; margin-right: 10px; color: #000000; }
-        input[type="number"] { padding: 8px; width: 100px; border: 2px solid #ffcc00; border-radius: 8px; font-size: 20px; text-align: center; color: #000000; font-weight: bold; }
+        label { font-weight: bold; font-size: 16px; margin-right: 5px; color: #000000; }
+        input[type="number"] { padding: 6px; width: 90px; border: 2px solid #ffcc00; border-radius: 8px; font-size: 18px; text-align: center; color: #000000; font-weight: bold; }
         .btn-area { text-align: center; margin: 20px 0; }
         button { padding: 10px 30px; background-color: #ff9900; color: white; border: none; border-radius: 25px; font-size: 18px; cursor: pointer; font-weight: bold; box-shadow: 0 4px #d35400; }
         button:hover { background-color: #f39c12; }
         button:active { box-shadow: 0 0 #d35400; transform: translateY(4px); }
-        .result-box { margin-top: 25px; padding: 20px; background-color: #fffdf9; border: 2px dashed #ff9900; border-radius: 8px; display: none; }
-        .result-title { font-weight: bold; color: #b33939; margin-top: 20px; font-size: 18px; border-left: 5px solid #ff9900; padding-left: 10px; }
+        .result-box { margin-top: 25px; padding: 15px; background-color: #fffdf9; border: 2px dashed #ff9900; border-radius: 8px; display: none; }
+        .result-title { font-weight: bold; color: #b33939; margin-top: 20px; font-size: 16px; border-left: 5px solid #ff9900; padding-left: 10px; }
         .highlight-red { color: #b33939; font-weight: bold; }
         
-        .output-text { background: white; padding: 15px; border: 2px solid #ffe0b2; border-radius: 6px; font-family: 'Courier New', Courier, monospace; font-size: 19px; font-weight: bold; line-height: 1.8; overflow-x: auto; white-space: pre; color: #000000; }
+        /* 基本のテキストボックス設定 */
+        .output-text { background: white; padding: 12px; border: 2px solid #ffe0b2; border-radius: 6px; font-family: 'Courier New', Courier, monospace; font-size: 18px; font-weight: bold; line-height: 1.8; overflow-x: auto; white-space: pre; color: #000000; }
         
         .box-num { border: 2px solid #1e8449; background-color: #e8f8f5; padding: 0px; border-radius: 4px; font-weight: bold; color: #1e8449; display: inline-block; text-align: center; width: 22px; height: 26px; line-height: 26px; }
         .normal-num { display: inline-block; text-align: center; width: 26px; height: 30px; line-height: 30px; }
+
+        /* 📱 ここが新しいスマホ専用の自動調整（レスポンシブCSS）だべさ！ */
+        @media screen and (max-width: 600px) {
+            body { margin: 10px 5px; }
+            .container { padding: 15px 10px; }
+            h1 { font-size: 18px; }
+            label { font-size: 14px; display: block; margin-bottom: 5px; }
+            input[type="number"] { font-size: 16px; width: 120px; }
+            .result-title { font-size: 14px; }
+            
+            /* スマホのときは文字サイズを少し小さくし、文字の隙間（width）をギリギリまで詰めちゃうべさ */
+            .output-text { font-size: 14px; padding: 8px; line-height: 1.6; }
+            .box-num { width: 16px; height: 20px; line-height: 20px; font-size: 14px; }
+            .normal-num { width: 18px; height: 22px; line-height: 22px; font-size: 14px; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🎒 素因数分解を使って、最大公約数、最小公倍数をみつけよう！</h1>
-    <p style="text-align: center; font-size: 15px; color: #333; font-weight: bold;">2つの数字を、それぞれ、素因数分解して、共通の部分を調べます。</p>
+    <h1>🎒 数字の「なかま」をみつけよう！</h1>
+    <p style="text-align: center; font-size: 13px; color: #333; font-weight: bold; margin-bottom: 20px;">2つの数字をバラバラにして、共通の部分や大きさを比べます。</p>
     
     <div class="input-group">
         <label for="num1">ひとつめの数字 :</label>
@@ -43,7 +59,7 @@
     </div>
     
     <div class="btn-area">
-        <button py-click="calculate_all">しらべるさ！</button>
+        <button py-click="calculate_all">しらべるべさ！</button>
     </div>
 
     <div id="result" class="result-box">
@@ -129,7 +145,6 @@ def calculate_all(event):
     html2 = f"{head1}{' × '.join(html2_list1)}\n"
     html2 += f"{head2}{' × '.join(html2_list2)}\n\n"
     
-    # 【修正】「のなかが共通」＆「共通の部分がないので 最大公約数は１」に修正！
     if len(common_primes) > 0:
         str_common = " × ".join(map(str, common_primes))
         html2 += f"👉 <b>□ のなかが共通の部分（<span class='highlight-red'>最大公約数</span>）</b>：\n"
@@ -160,7 +175,6 @@ def calculate_all(event):
             line1_text = f"・ひとつめの数字（{val1}）に、ふたつめのはみ出た部分（{str_diff2}）を掛け合わせる\n"
             line1_calc = f"   {val1} × {str_diff2} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n"
         else:
-            # 共通がない時は「あいての数字」をかける＆式もすっきり元の数字に！
             line1_text = f"・ひとつめの数字（{val1}）に、あいての数字（{val2}）を掛け合わせる\n"
             line1_calc = f"   {val1} × {val2} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n"
     else:
@@ -174,7 +188,6 @@ def calculate_all(event):
             line2_text = f"・ふたつめの数字（{val2}）に、ひとつめのはみ出た部分（{str_diff1}）を掛け合わせる\n\n"
             line2_calc = f"   {val2} × {str_diff1} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n\n"
         else:
-            # 共通がない時は「あいての数字」をかける＆式もすっきり元の数字に！
             line2_text = f"・ふたつめの数字（{val2}）に、あいての数字（{val1}）を掛け合わせる\n\n"
             line2_calc = f"   {val2} × {val1} ＝ <span style='color: #2980b9; font-size: 22px;'><b>{lcm_val}</b></span>\n\n"
     else:
