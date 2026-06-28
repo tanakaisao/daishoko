@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -27,7 +28,7 @@
         .box-num { border: 2px solid #1e8449; background-color: #e8f8f5; padding: 0px; border-radius: 4px; font-weight: bold; color: #1e8449; display: inline-block; text-align: center; width: 22px; height: 26px; line-height: 26px; }
         .normal-num { display: inline-block; text-align: center; width: 26px; height: 30px; line-height: 30px; }
 
-        /* 📱 ここが新しいスマホ専用の自動調整（レスポンシブCSS）だべさ！ */
+        /* 📱 スマホ専用の自動調整（レスポンシブCSS）だべさ！ */
         @media screen and (max-width: 600px) {
             body { margin: 10px 5px; }
             .container { padding: 15px 10px; }
@@ -36,7 +37,7 @@
             input[type="number"] { font-size: 16px; width: 120px; }
             .result-title { font-size: 14px; }
             
-            /* スマホのときは文字サイズを少し小さくし、文字の隙間（width）をギリギリまで詰めちゃうべさ */
+            /* スマホのときは文字サイズを少し小さくし、文字の隙間（width）をギリギリまで詰めるべさ */
             .output-text { font-size: 14px; padding: 8px; line-height: 1.6; }
             .box-num { width: 16px; height: 20px; line-height: 20px; font-size: 14px; }
             .normal-num { width: 18px; height: 22px; line-height: 22px; font-size: 14px; }
@@ -46,8 +47,8 @@
 <body>
 
 <div class="container">
-    <h1>🎒 数字の「なかま」をみつけよう！</h1>
-    <p style="text-align: center; font-size: 13px; color: #333; font-weight: bold; margin-bottom: 20px;">2つの数字をバラバラにして、共通の部分や大きさを比べます。</p>
+    <h1>🎒 素因数分解を使って、最大公約数、最小公倍数をみつけよう！</h1>
+    <p style="text-align: center; font-size: 13px; color: #333; font-weight: bold; margin-bottom: 20px;">2つの数字を、それぞれ、素因数分解して、共通の部分を調べます。</p>
     
     <div class="input-group">
         <label for="num1">ひとつめの数字 :</label>
@@ -59,7 +60,7 @@
     </div>
     
     <div class="btn-area">
-        <button py-click="calculate_all">しらべるべさ！</button>
+        <button py-click="calculate_all">しらべるさ！</button>
     </div>
 
     <div id="result" class="result-box">
